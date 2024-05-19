@@ -1,11 +1,13 @@
 import random
 import numpy as np
 
+
 class MyLineReg():
-    def __init__(self, learning_rate, sgd_sample=None, random_state=42, n_iter=100, weights=None, metric=None, reg=None, l1_coef=0, l2_coef=0):
+    def __init__(self, learning_rate, sgd_sample=None, random_state=42, n_iter=100, weights=None, metric=None, reg=None,
+                 l1_coef=0, l2_coef=0):
         """
         Initialize the linear regression model.
-        
+
         Parameters:
         - learning_rate: The learning rate for gradient descent.
         - sgd_sample: The sample size for stochastic gradient descent. Can be an int, float, or None.
@@ -33,7 +35,7 @@ class MyLineReg():
     def fit(self, X, y, verbose=False):
         """
         Train the linear regression model using gradient descent.
-        
+
         Parameters:
         - X: Input features as a pandas DataFrame.
         - y: Target variable as a pandas Series.
@@ -57,7 +59,7 @@ class MyLineReg():
                 sample_rows_idx = random.sample(range(X.shape[0]), sample_size)
                 X_sampled = X.to_numpy()[sample_rows_idx]
                 y_sampled = y.to_numpy()[sample_rows_idx]
-            else:
+            elif self.sgd_sample is None:
                 X_sampled = X.to_numpy()
                 y_sampled = y.to_numpy()
 
@@ -66,14 +68,21 @@ class MyLineReg():
 
             # Compute the mean squared error (MSE) and gradient
             if self.reg == 'l1':
-                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l1_coef * np.abs(self.weights).sum()
-                gradient = 2 / len(y_sampled) * (X_sampled @ self.weights - y_sampled) @ X_sampled + self.l1_coef * np.sign(self.weights)
+                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l1_coef * np.abs(
+                    self.weights).sum()
+                gradient = 2 / len(y_sampled) * (
+                            X_sampled @ self.weights - y_sampled) @ X_sampled + self.l1_coef * np.sign(self.weights)
             elif self.reg == 'l2':
-                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l2_coef * np.square(self.weights).sum()
-                gradient = 2 / len(y_sampled) * (X_sampled @ self.weights - y_sampled) @ X_sampled + 2 * self.l2_coef * self.weights
+                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l2_coef * np.square(
+                    self.weights).sum()
+                gradient = 2 / len(y_sampled) * (
+                            X_sampled @ self.weights - y_sampled) @ X_sampled + 2 * self.l2_coef * self.weights
             elif self.reg == 'elasticnet':
-                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l1_coef * np.abs(self.weights).sum() + self.l2_coef * np.square(self.weights).sum()
-                gradient = 2 / len(y_sampled) * (X_sampled @ self.weights - y_sampled) @ X_sampled + self.l1_coef * np.sign(self.weights) + 2 * self.l2_coef * self.weights
+                mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum()) + self.l1_coef * np.abs(
+                    self.weights).sum() + self.l2_coef * np.square(self.weights).sum()
+                gradient = 2 / len(y_sampled) * (
+                            X_sampled @ self.weights - y_sampled) @ X_sampled + self.l1_coef * np.sign(
+                    self.weights) + 2 * self.l2_coef * self.weights
             else:
                 mse = np.mean(np.square(np.subtract(y_predicted, y.to_numpy())).sum())
                 gradient = 2 / len(y_sampled) * (X_sampled @ self.weights - y_sampled) @ X_sampled
@@ -98,10 +107,10 @@ class MyLineReg():
     def predict(self, X):
         """
         Make predictions using the trained linear regression model.
-        
+
         Parameters:
         - X: Input features as a pandas DataFrame.
-        
+
         Returns:
         - Predictions as a numpy array.
         """
@@ -111,11 +120,11 @@ class MyLineReg():
     def calculate_metric(self, y, y_pred):
         """
         Calculate the evaluation metric based on the provided metric type.
-        
+
         Parameters:
         - y: True target values.
         - y_pred: Predicted target values.
-        
+
         Returns:
         - Calculated metric value.
         """
